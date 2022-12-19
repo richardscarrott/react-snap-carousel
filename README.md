@@ -20,6 +20,8 @@ React Snap Carousel leaves the DOM in charge of scroll state and merely computes
 
 ## Examples
 
+🔥[LIVE DEMO](https://richardscarrott.github.io/react-snap-carousel/)🔥
+
 ### Basic
 
 This basic carousel will dynamically add CSS snap points to items based on the current DOM layout.
