@@ -1,0 +1,41 @@
+.root {
+}
+
+.scroll {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  overflow: auto;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.item {
+  font-size: 50px;
+  font-family: Arial, Helvetica, sans-serif;
+  width: 250px;
+  height: 250px;
+  flex-shrink: 0;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.paginationButtonActive {
+  opacity: 0.5;
+}
