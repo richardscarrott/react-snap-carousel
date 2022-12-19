@@ -1,20 +1,28 @@
 # React Snap Carousel
 
-DOM-first, progressively enhanced responsive carousel for React.
+[![GitHub package.json version](https://img.shields.io/github/package-json/v/richardscarrott/react-snap-carousel.svg)](https://www.npmjs.com/package/react-snap-carousel)
+[![CI](https://github.com/richardscarrott/react-snap-carousel/actions/workflows/node.js.yml/badge.svg)](https://github.com/richardscarrott/react-snap-carousel/actions/workflows/node.js.yml)
+[![GitHub license](https://img.shields.io/github/license/richardscarrott/react-snap-carousel.svg)](https://github.com/richardscarrott/react-snap-carousel/blob/main/LICENSE)
 
-📜 Utilizes native browser scrolling & CSS scroll snap points
+DOM-first, responsive carousel for React.
 
-🧮 Computes responsive page state from scroll position & layout
+React Snap Carousel leaves the DOM in charge of scroll state and merely computes derived data from the layout, allowing you to progressively enhance a scroll element with responsive carousel controls.
 
-📲 Dynamic CSS snap point rendering for smooth swiping
+🧈 Utilizes native browser scrolling & CSS scroll snap points
 
-🎛 Full control over rendering via React Hooks API
+📏 Computes responsive page state from DOM layout & scroll position
 
-## Usage
+📲 Dynamic page-based CSS snap point rendering
+
+🎛 Full control over UI using React Hooks API
+
+☕️ Zero dependencies + [small footprint (1.1kB)](https://bundlephobia.com/package/react-snap-carousel@0.0.1)
+
+## Examples
 
 ### Basic
 
-This basic carousel will dynamically add CSS snap points to items based on the current layout.
+This basic carousel will dynamically add CSS snap points to items based on the current DOM layout.
 
 ```tsx
 import React from 'react';
@@ -57,9 +65,10 @@ export default BasicCarousel;
 
 ### Advanced
 
-Similarly, this more advanced carousel will dynamically add CSS snap points to items based on the current layout, but additionally provides dynamic pagination & next / prev controls.
+This advanced example will additionally render dynamic carousel controls.
 
 ```tsx
+import React from 'react';
 import { useSnapCarousel } from 'react-snap-carousel';
 
 const AdvancedCarousel = () => {
@@ -98,9 +107,9 @@ const AdvancedCarousel = () => {
       </div>
       <button onClick={() => prev()}>Prev</button>
       <button onClick={() => next()}>Next</button>
-      <ol>
+      <ol style={{ display: 'flex' }}>
         {pages.map((_, i) => (
-          <li style={{ display: 'flex' }} key={i}>
+          <li key={i}>
             <button
               style={i === activePageIndex ? { opacity: 0.5 } : {}}
               onClick={() => goTo(i)}
