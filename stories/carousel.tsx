@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { useSnapCarousel } from '../src/use-carousel';
+import { useSnapCarousel } from '../src/use-snap-carousel';
 import './reset.css';
 const styles = require('./carousel.module.css');
 

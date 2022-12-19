@@ -56,7 +56,7 @@
     "typescript": "^4.8.3"
   },
   "scripts": {
-    "build": "tsup src/use-snap-carousel.tsx --format esm,cjs --dts --clean",
+    "build": "tsup src/use-snap-carousel.tsx --format esm,cjs --dts --clean && npm run build-storybook",
     "test": "jest",
     "prepublishOnly": "npm run test && npm run build",
     "storybook": "start-storybook -p 6006",
