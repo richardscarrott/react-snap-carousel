@@ -60,7 +60,7 @@
     "test": "jest",
     "prepublishOnly": "npm run test && npm run build",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook -o gh-pages"
+    "build-storybook": "build-storybook -o docs"
   },
   "files": [
     "dist"
