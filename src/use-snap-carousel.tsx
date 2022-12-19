@@ -41,7 +41,6 @@ export const useSnapCarousel = ({
       const hasScrolledToEnd =
         Math.floor(scrollEl.scrollWidth - scrollEl.scrollLeft) <=
         scrollEl.clientWidth;
-      console.log('hasScrollToEnd', hasScrolledToEnd);
       if (hasScrolledToEnd) {
         // If scrolled to the end, set page to last as it may not end up with an
         // offset of 0 due to scroll capping.
