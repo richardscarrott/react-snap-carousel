@@ -8,7 +8,7 @@ DOM-first, responsive carousel for React.
 
 React Snap Carousel leaves the DOM in charge of scrolling and simply computes derived state from the layout, allowing you to progressively enhance a scroll element with responsive carousel controls.
 
-🧈 Utilizes native browser scrolling & CSS scroll snap points
+🧈 Utilizes native browser scrolling & CSS scroll snap points for best performance and UX
 
 📏 Computes responsive page state from DOM layout & scroll position
 
@@ -16,7 +16,7 @@ React Snap Carousel leaves the DOM in charge of scrolling and simply computes de
 
 🎛 Full control over UI using React Hooks API
 
-☕️ Zero dependencies + [small footprint (1.1kB)](https://bundlephobia.com/package/react-snap-carousel@0.0.1)
+☕️ [Lightweight (~1kB)](https://bundlephobia.com/package/react-snap-carousel) + zero dependencies
 
 ![Alt Text](react-snap-carousel.gif)
 
