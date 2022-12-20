@@ -9,6 +9,7 @@ const styles = require('./carousel.module.css');
  */
 
 export interface CarouselProps {
+  readonly axis?: 'x' | 'y';
   readonly children?: React.ReactNode;
 }
 
@@ -17,14 +18,19 @@ export interface CarouselRef {
 }
 
 export const Carousel = React.forwardRef<CarouselRef, CarouselProps>(
-  ({ children } = {}, ref) => {
+  ({ children, axis } = {}, ref) => {
     const { scrollRef, next, prev, goTo, pages, activePageIndex, refresh } =
-      useSnapCarousel();
+      useSnapCarousel({ axis });
 
     useImperativeHandle(ref, () => ({ refresh }));
 
     return (
-      <div className={styles.root}>
+      <div
+        className={classNames(styles.root, {
+          [styles.x]: axis === 'x',
+          [styles.y]: axis === 'y'
+        })}
+      >
         <ul className={styles.scroll} ref={scrollRef}>
           {children}
         </ul>

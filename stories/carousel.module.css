@@ -3,23 +3,34 @@
   margin: 0 -1rem; /* bust out of storybook margin (to demonstrate full bleed carousel) */
 }
 
+.y.root {
+  margin: -1rem 0;
+  height: 100vh;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
 .scroll {
   position: relative;
   display: flex;
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
   overflow: auto;
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
   scroll-padding: 0 1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding: 0 1rem;
 }
 
 .scroll::-webkit-scrollbar {
   display: none;
+}
+
+.y .scroll {
+  display: block;
+  scroll-snap-type: y mandatory;
+  scroll-padding: 1rem 0;
+  padding: 1rem 0 0 0;
 }
 
 .item {
@@ -45,6 +56,15 @@
   margin-right: 0;
 }
 
+.y .item {
+  margin-right: 0;
+  margin-bottom: 0.6rem;
+}
+
+.y .item:last-child {
+  margin-bottom: 0;
+}
+
 .pageIndicator {
   font-family: Futura, Trebuchet MS, Arial, sans-serif;
   font-weight: bold;
@@ -60,7 +80,7 @@
 }
 
 .controls {
-  margin-top: 1rem;
+  margin: 1rem 0;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -34,15 +34,20 @@ export const VariableWidth = () => {
   );
 };
 
-// export const Vertical = {
-//   args: {}
-// };
+export const VerticalAxis = () => {
+  const items = Array.from({ length: 18 });
+  return (
+    <Carousel axis="y">
+      {items.map((_, i) => (
+        <CarouselItem key={i} bgColor={getColor(i)}>
+          {i + 1}
+        </CarouselItem>
+      ))}
+    </Carousel>
+  );
+};
 
-// export const VariableHeight = {
-//   args: {}
-// };
-
-export const AddItems = () => {
+export const DynamicItems = () => {
   const carouselRef = useRef<CarouselRef>(null);
   const [items, setItems] = useState(() => Array.from({ length: 1 }));
   const addItem = () => {

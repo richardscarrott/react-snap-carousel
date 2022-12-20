@@ -11,6 +11,7 @@ export interface SnapCarouselResult {
 }
 
 export interface SnapCarouselOptions {
+  readonly axis?: 'x' | 'y';
   readonly snapPointClassName?: string;
 }
 
@@ -20,8 +21,17 @@ interface SnapCarouselState {
 }
 
 export const useSnapCarousel = ({
+  axis = 'x',
   snapPointClassName
 }: SnapCarouselOptions = {}): SnapCarouselResult => {
+  const dimension = axis === 'x' ? 'width' : 'height';
+  const scrollDimension = axis === 'x' ? 'scrollWidth' : 'scrollHeight';
+  const clientDimension = axis === 'x' ? 'clientWidth' : 'clientHeight';
+  const nearSidePos = axis === 'x' ? 'left' : 'top';
+  const farSidePos = axis === 'x' ? 'right' : 'bottom';
+  const scrollPos = axis === 'x' ? 'scrollLeft' : 'scrollTop';
+  const offsetPos = axis === 'x' ? 'offsetLeft' : 'offsetTop';
+
   const [scrollEl, setScrollEl] = useState<HTMLElement | null>(null);
   // NOTE: `pages` & `activePageIndex` are modelled as a single state object
   // to ensure they don't become out of sync with one another. (i.e. would rather
@@ -39,8 +49,8 @@ export const useSnapCarousel = ({
       }
       // https://excalidraw.com/#json=1ztbZ26T3ri14SiJBZlt4,Rqa2mjiaYJesnfPYEiBdPQ
       const hasScrolledToEnd =
-        Math.floor(scrollEl.scrollWidth - scrollEl.scrollLeft) <=
-        scrollEl.clientWidth;
+        Math.floor(scrollEl[scrollDimension] - scrollEl[scrollPos]) <=
+        scrollEl[clientDimension];
       if (hasScrolledToEnd) {
         // If scrolled to the end, set page to last as it may not end up with an
         // offset of 0 due to scroll capping.
@@ -54,14 +64,14 @@ export const useSnapCarousel = ({
         const leadIndex = page[0];
         const leadEl = items[leadIndex];
         const rect = leadEl.getBoundingClientRect();
-        const offset = rect.left - scrollPort.left;
+        const offset = rect[nearSidePos] - scrollPort[nearSidePos];
         return Math.abs(offset);
       });
       const minOffset = Math.min(...offsets);
       const nextActivePageIndex = offsets.indexOf(minOffset);
       setCarouselState({ pages, activePageIndex: nextActivePageIndex });
     },
-    [scrollEl]
+    [scrollEl, clientDimension, nearSidePos, scrollDimension, scrollPos]
   );
 
   const refresh = useCallback(() => {
@@ -70,33 +80,38 @@ export const useSnapCarousel = ({
     }
     const items = Array.from(scrollEl.children);
     const scrollPort = scrollEl.getBoundingClientRect();
-    let currPageWidth = 0;
-    let allItemsWidth = 0;
+    let currPageDimension = 0;
+    let allItemsDimension = 0;
     const pages = items.reduce<number[][]>((acc, item, i) => {
       const currPage = acc[acc.length - 1];
-      // NOTE: `itemWidth` is determined by measuring the right hand side of the
+      // NOTE: `itemDimension` is determined by measuring the far side of the
       // bounding box; this ensures any margin / positioning influencing the visible
       // position of the element is factored in.
-      const itemWidth =
-        item.getBoundingClientRect().right -
-        scrollPort.left +
-        scrollEl.scrollLeft -
-        allItemsWidth;
-      currPageWidth += itemWidth;
-      allItemsWidth += itemWidth;
-      if (!currPage || currPageWidth > scrollPort.width) {
+      const itemDimension =
+        item.getBoundingClientRect()[farSidePos] -
+        scrollPort[nearSidePos] +
+        scrollEl[scrollPos] -
+        allItemsDimension;
+      currPageDimension += itemDimension;
+      allItemsDimension += itemDimension;
+      if (!currPage || currPageDimension > scrollPort[dimension]) {
         acc.push([i]);
-        currPageWidth = itemWidth;
+        currPageDimension = itemDimension;
       } else {
         currPage.push(i);
       }
       return acc;
     }, []);
     refreshActivePage(pages);
-  }, [refreshActivePage, scrollEl]);
+  }, [
+    refreshActivePage,
+    scrollEl,
+    dimension,
+    farSidePos,
+    nearSidePos,
+    scrollPos
+  ]);
 
-  // This is a little indirect, but ultimately when `refresh` changes it means the `scrollEl`
-  // has changed so we refresh the state.
   useLayoutEffect(() => {
     refresh();
   }, [refresh]);
@@ -146,7 +161,7 @@ export const useSnapCarousel = ({
     }
     scrollEl.scrollTo({
       behavior: 'smooth',
-      left: leadEl.offsetLeft
+      [nearSidePos]: leadEl[offsetPos]
     });
   };
 
@@ -158,16 +173,6 @@ export const useSnapCarousel = ({
     handleGoTo(activePageIndex + 1);
   };
 
-  const setSnapPoint = (el: HTMLElement) =>
-    typeof snapPointClassName !== 'undefined'
-      ? el.classList.add(snapPointClassName)
-      : (el.style.scrollSnapAlign = 'start');
-
-  const clearSnapPoint = (el: HTMLElement) =>
-    typeof snapPointClassName !== 'undefined'
-      ? el.classList.remove(snapPointClassName)
-      : (el.style.scrollSnapAlign = '');
-
   // Render snap points
   // NOTE: This could be handed off to the call site via a render prop, but as `scrollEl.children`
   // is known to this hook, imperatively updating them seems reasonable and more useful.
@@ -175,6 +180,16 @@ export const useSnapCarousel = ({
     if (!scrollEl) {
       return;
     }
+    const setSnapPoint = (el: HTMLElement) =>
+      snapPointClassName
+        ? el.classList.add(snapPointClassName)
+        : (el.style.scrollSnapAlign = 'start');
+
+    const clearSnapPoint = (el: HTMLElement) =>
+      snapPointClassName
+        ? el.classList.remove(snapPointClassName)
+        : (el.style.scrollSnapAlign = '');
+
     const items = Array.from(scrollEl.children);
     const snapPointIndexes = new Set(pages.map((page) => page[0]));
     items.forEach((item, i) => {
