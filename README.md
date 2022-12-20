@@ -6,7 +6,7 @@
 
 DOM-first, responsive carousel for React.
 
-React Snap Carousel leaves the DOM in charge of scroll state and merely computes derived data from the layout, allowing you to progressively enhance a scroll element with responsive carousel controls.
+React Snap Carousel leaves the DOM in charge of scrolling and simply computes derived state from the layout, allowing you to progressively enhance a scroll element with responsive carousel controls.
 
 🧈 Utilizes native browser scrolling & CSS scroll snap points
 
@@ -21,6 +21,8 @@ React Snap Carousel leaves the DOM in charge of scroll state and merely computes
 ## Examples
 
 🔥[LIVE DEMO](https://richardscarrott.github.io/react-snap-carousel/)🔥
+
+## Usage
 
 ### Basic
 
@@ -65,9 +67,9 @@ const BasicCarousel = () => {
 export default BasicCarousel;
 ```
 
-### Advanced
+### Controls
 
-This advanced example will additionally render dynamic carousel controls.
+This controls example additionally renders dynamic carousel controls.
 
 ```tsx
 import React from 'react';
@@ -127,3 +129,7 @@ const AdvancedCarousel = () => {
 
 export default AdvancedCarousel;
 ```
+
+## License
+
+[MIT](LICENSE)
