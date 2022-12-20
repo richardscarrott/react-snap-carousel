@@ -6,9 +6,9 @@
 
 DOM-first, responsive carousel for React.
 
-![Alt Text](react-snap-carousel.gif)
-
 React Snap Carousel leaves the DOM in charge of scrolling and simply computes derived state from the layout, allowing you to progressively enhance a scroll element with responsive carousel controls.
+
+![Alt Text](react-snap-carousel.gif)
 
 🧈 Utilizes native browser scrolling & CSS scroll snap points for best performance and UX
 
@@ -68,15 +68,14 @@ const styles = {
     alignItems: 'center'
   },
   nextPrevButton: {},
+  nextPrevButtonDisabled: { opacity: 0.3 },
   pagination: {
     display: 'flex'
   },
   paginationButton: {
     margin: '10px'
   },
-  paginationButtonActive: {
-    opacity: 0.3
-  },
+  paginationButtonActive: { opacity: 0.3 },
   pageIndicator: {
     display: 'flex',
     justifyContent: 'center'
@@ -96,8 +95,14 @@ export const Carousel = ({ children }: CarouselProps) => {
         {children}
       </ul>
       <div style={styles.controls}>
-        <button style={{ ...styles.nextPrevButton }} onClick={() => prev()}>
-          {String.fromCharCode(8592)}
+        <button
+          style={{
+            ...styles.nextPrevButton,
+            ...(activePageIndex === 0 ? styles.nextPrevButtonDisabled : {})
+          }}
+          onClick={() => prev()}
+        >
+          Prev
         </button>
         {pages.map((_, i) => (
           <button
@@ -110,8 +115,16 @@ export const Carousel = ({ children }: CarouselProps) => {
             {i + 1}
           </button>
         ))}
-        <button style={styles.nextPrevButton} onClick={() => next()}>
-          {String.fromCharCode(8594)}
+        <button
+          style={{
+            ...styles.nextPrevButton,
+            ...(activePageIndex === pages.length - 1
+              ? styles.nextPrevButtonDisabled
+              : {})
+          }}
+          onClick={() => next()}
+        >
+          Next
         </button>
       </div>
       <div style={styles.pageIndicator}>
