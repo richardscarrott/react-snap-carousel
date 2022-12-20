@@ -20,6 +20,12 @@ React Snap Carousel leaves the DOM in charge of scrolling and simply computes de
 
 ![Alt Text](react-snap-carousel.gif)
 
+## Install
+
+```
+npm install react-snap-carousel
+```
+
 ## Examples
 
 🔥[LIVE DEMO](https://richardscarrott.github.io/react-snap-carousel/)🔥
