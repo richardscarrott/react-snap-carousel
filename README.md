@@ -18,6 +18,8 @@ React Snap Carousel leaves the DOM in charge of scrolling and simply computes de
 
 ☕️ Zero dependencies + [small footprint (1.1kB)](https://bundlephobia.com/package/react-snap-carousel@0.0.1)
 
+![Alt Text](react-snap-carousel.gif)
+
 ## Examples
 
 🔥[LIVE DEMO](https://richardscarrott.github.io/react-snap-carousel/)🔥
