@@ -1,4 +1,6 @@
 .root {
+  position: relative;
+  margin: 0 -1rem; /* bust out of storybook margin (to demonstrate full bleed carousel) */
 }
 
 .scroll {
@@ -11,6 +13,9 @@
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  scroll-padding: 0 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .scroll::-webkit-scrollbar {
@@ -18,25 +23,108 @@
 }
 
 .item {
-  font-size: 50px;
-  font-family: Arial, Helvetica, sans-serif;
-  width: 250px;
-  height: 250px;
+  font-family: Futura, Trebuchet MS, Arial, sans-serif;
+  font-size: 125px;
+  line-height: 1;
+  width: 300px;
+  height: 300px;
+  max-width: 100%;
   flex-shrink: 0;
   color: white;
   display: flex;
+  justify-content: end;
+  align-items: end;
+  padding: 16px 20px;
+  text-transform: uppercase;
+  text-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);
+  margin-right: 0.6rem;
+  overflow: hidden;
+}
+
+.item:last-child {
+  margin-right: 0;
+}
+
+.pageIndicator {
+  font-family: Futura, Trebuchet MS, Arial, sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  border-radius: 5px;
+  color: #374151;
+}
+
+.controls {
+  margin-top: 1rem;
+  display: flex;
   justify-content: center;
   align-items: center;
+  color: #374151;
+  padding: 0 1rem;
+}
+
+.prevButton,
+.nextButton {
+  font-size: 18px;
+  transition: opacity 100ms ease-out;
+}
+
+.prevButton[disabled],
+.nextButton[disabled] {
+  opacity: 0.4;
 }
 
 .pagination {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  margin: 0 10px;
 }
 
-.paginationButtonActive {
-  opacity: 0.5;
+.paginationItem {
+  display: flex;
+  justify-content: center;
+}
+
+.paginationButton {
+  display: block;
+  text-indent: -99999px;
+  overflow: hidden;
+  background: #374151;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin: 5px;
+  transition: opacity 100ms ease-out;
+}
+
+.paginationItemActive .paginationButton {
+  opacity: 0.3;
+}
+
+@media only screen and (max-width: 480px) {
+  .item {
+    width: 280px;
+    height: 280px;
+  }
+
+  .pagination {
+    margin: 0 8px;
+  }
+
+  .prevButton,
+  .nextButton {
+    font-size: 15px;
+  }
+
+  .paginationButton {
+    width: 9px;
+    height: 9px;
+    margin: 4px;
+  }
 }
