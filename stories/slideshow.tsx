@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import { useSnapCarousel } from '../src/use-snap-carousel';
 import './reset.css';
@@ -9,16 +9,44 @@ const styles = require('./slideshow.module.css');
  */
 
 export interface SlideShowProps {
-  readonly children?: React.ReactNode;
+  readonly children?:
+    | React.ReactNode
+    | ((props: SlideShowRenderProps) => React.ReactNode);
+}
+
+export interface SlideShowRenderProps {
+  readonly activePageIndex: number;
 }
 
 export const SlideShow = ({ children }: SlideShowProps = {}) => {
   const { scrollRef, next, prev, goTo, pages, activePageIndex, refresh } =
     useSnapCarousel();
+
+  useEffect(() => {
+    const handle = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'ArrowLeft':
+          next();
+          return;
+        case 'ArrowRight':
+          prev();
+          return;
+        default:
+          return;
+      }
+    };
+    window.addEventListener('keypress', handle);
+    return () => {
+      window.removeEventListener('keypress', handle);
+    };
+  }, [next, prev]);
+
   return (
     <div className={styles.root}>
       <ul className={styles.scroll} ref={scrollRef}>
-        {children}
+        {typeof children === 'function'
+          ? children({ activePageIndex })
+          : children}
       </ul>
       <div className={styles.pageIndicator}>
         {activePageIndex + 1} / {pages.length}
@@ -62,12 +90,28 @@ export const SlideShow = ({ children }: SlideShowProps = {}) => {
 
 export interface SlideShowItemProps {
   readonly src: string;
+  readonly title: string;
+  readonly subtitle: string;
+  readonly active: boolean;
 }
 
-export const SlideShowItem = ({ src }: SlideShowItemProps) => {
+export const SlideShowItem = ({
+  src,
+  active,
+  title,
+  subtitle
+}: SlideShowItemProps) => {
   return (
-    <li className={styles.item}>
-      <img src={src} className={styles.image} />
+    <li
+      className={classNames(styles.item, {
+        [styles.itemActive]: active
+      })}
+    >
+      <div className={styles.itemText}>
+        <h2 className={styles.itemTitle}>{title}</h2>
+        <p className={styles.itemSubtitle}>{subtitle}</p>
+      </div>
+      <img src={src} className={styles.itemImage} alt="" />
     </li>
   );
 };
