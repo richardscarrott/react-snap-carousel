@@ -18,8 +18,9 @@
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  scroll-padding: 0 1rem;
-  padding: 0 1rem;
+  /* TODO: Add better support for scroll-padding / scroll-margin */
+  /* scroll-padding: 0 1rem;
+  padding: 0 1rem; */
 }
 
 .scroll::-webkit-scrollbar {
