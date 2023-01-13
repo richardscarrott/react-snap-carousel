@@ -30,7 +30,6 @@ export const useSnapCarousel = ({
   const nearSidePos = axis === 'x' ? 'left' : 'top';
   const farSidePos = axis === 'x' ? 'right' : 'bottom';
   const scrollPos = axis === 'x' ? 'scrollLeft' : 'scrollTop';
-  const offsetPos = axis === 'x' ? 'offsetLeft' : 'offsetTop';
 
   const [scrollEl, setScrollEl] = useState<HTMLElement | null>(null);
   // NOTE: `pages` & `activePageIndex` are modelled as a single state object
@@ -64,6 +63,7 @@ export const useSnapCarousel = ({
         const leadIndex = page[0];
         const leadEl = items[leadIndex];
         const rect = leadEl.getBoundingClientRect();
+        // TODO: Factor in scrollMargin & scrollPadding here
         const offset = rect[nearSidePos] - scrollPort[nearSidePos];
         return Math.abs(offset);
       });
@@ -80,23 +80,23 @@ export const useSnapCarousel = ({
     }
     const items = Array.from(scrollEl.children);
     const scrollPort = scrollEl.getBoundingClientRect();
-    let currPageDimension = 0;
-    let allItemsDimension = 0;
+    let currPageStartPos = 0;
     const pages = items.reduce<number[][]>((acc, item, i) => {
-      const currPage = acc[acc.length - 1];
-      // NOTE: `itemDimension` is determined by measuring the far side of the
-      // bounding box; this ensures any margin / positioning influencing the visible
-      // position of the element is factored in.
-      const itemDimension =
-        item.getBoundingClientRect()[farSidePos] -
-        scrollPort[nearSidePos] +
-        scrollEl[scrollPos] -
-        allItemsDimension;
-      currPageDimension += itemDimension;
-      allItemsDimension += itemDimension;
-      if (!currPage || currPageDimension > scrollPort[dimension]) {
+      if (i === 0) {
         acc.push([i]);
-        currPageDimension = itemDimension;
+        // NOTE: The `currPageStartPos` is always 0 for the first page, even if there's
+        // scroll padding / margin, hence we early return.
+        return acc;
+      }
+      const currPage = acc[acc.length - 1];
+      const rect = getOffsetRect(item, item.parentElement);
+      if (
+        rect[farSidePos] - currPageStartPos >
+        Math.ceil(scrollPort[dimension])
+      ) {
+        acc.push([i]);
+        // TODO: Factor in scrollMargin & scrollPadding here
+        currPageStartPos = rect[nearSidePos];
       } else {
         currPage.push(i);
       }
@@ -161,7 +161,7 @@ export const useSnapCarousel = ({
     }
     scrollEl.scrollTo({
       behavior: 'smooth',
-      [nearSidePos]: leadEl[offsetPos]
+      [nearSidePos]: getOffsetRect(leadEl, leadEl.parentElement)[nearSidePos]
     });
   };
 
@@ -220,5 +220,49 @@ export const useSnapCarousel = ({
     pages,
     activePageIndex,
     scrollRef: setScrollEl
+  };
+};
+
+// Like `el.getBoundingClientRect()` but ignores scroll.
+// It's similar to `offsetLeft` / `offsetTop`, but offers some of the virtues of `getBoundingClientRect`
+// such as factoring in CSS transforms & handling wrapped inline elements.
+// https://codepen.io/riscarrott/pen/ZEjyyay
+// https://w3c.github.io/csswg-drafts/cssom-view/#dom-htmlelement-offsetleft
+// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetLeft
+const getOffsetRect = (el: Element, relativeTo?: Element | null) => {
+  const rect = _getOffsetRect(el);
+  if (!relativeTo) {
+    return rect;
+  }
+  const relativeRect = _getOffsetRect(relativeTo);
+  return {
+    left: rect.left - relativeRect.left,
+    top: rect.top - relativeRect.top,
+    right: rect.right - relativeRect.left,
+    bottom: rect.bottom - relativeRect.top,
+    width: rect.width,
+    height: rect.height
+  };
+};
+
+const _getOffsetRect = (el: Element) => {
+  const rect = el.getBoundingClientRect();
+  let scrollLeft = 0;
+  let scrollTop = 0;
+  let parentEl = el.parentElement;
+  while (parentEl) {
+    scrollLeft += parentEl.scrollLeft;
+    scrollTop += parentEl.scrollTop;
+    parentEl = parentEl.parentElement;
+  }
+  const left = rect.left + scrollLeft;
+  const top = rect.top + scrollTop;
+  return {
+    left,
+    top,
+    right: left + rect.width,
+    bottom: top + rect.height,
+    width: rect.width,
+    height: rect.height
   };
 };
