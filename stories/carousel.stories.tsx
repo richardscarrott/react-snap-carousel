@@ -7,15 +7,20 @@ export default {
 };
 
 export const Default = () => {
-  const items = Array.from({ length: 18 });
+  const items = Array.from({ length: 18 }).map((_, index) => ({ id: index }));
   return (
-    <Carousel>
-      {items.map((_, i) => (
-        <CarouselItem key={i} bgColor={getColor(i)}>
-          {i + 1}
+    <Carousel
+      items={items}
+      renderItem={({ item, index, isSnapPoint }) => (
+        <CarouselItem
+          key={item.id}
+          isSnapPoint={isSnapPoint}
+          bgColor={getColor(index)}
+        >
+          {index + 1}
         </CarouselItem>
-      ))}
-    </Carousel>
+      )}
+    />
   );
 };
 
@@ -24,34 +29,48 @@ export const VariableWidth = () => {
     110, 300, 500, 120, 250, 300, 500, 400, 180, 300, 350, 700, 400, 230, 300
   ];
   return (
-    <Carousel>
-      {items.map((width, i) => (
-        <CarouselItem key={i} bgColor={getColor(i)} width={width}>
-          {i + 1}
+    <Carousel
+      items={items}
+      renderItem={({ item: width, index, isSnapPoint }) => (
+        <CarouselItem
+          key={index}
+          isSnapPoint={isSnapPoint}
+          bgColor={getColor(index)}
+          width={width}
+        >
+          {index + 1}
         </CarouselItem>
-      ))}
-    </Carousel>
+      )}
+    />
   );
 };
 
 export const VerticalAxis = () => {
-  const items = Array.from({ length: 18 });
+  const items = Array.from({ length: 18 }).map((_, index) => ({ id: index }));
   return (
-    <Carousel axis="y">
-      {items.map((_, i) => (
-        <CarouselItem key={i} bgColor={getColor(i)}>
-          {i + 1}
+    <Carousel
+      axis="y"
+      items={items}
+      renderItem={({ item, index, isSnapPoint }) => (
+        <CarouselItem
+          key={item.id}
+          isSnapPoint={isSnapPoint}
+          bgColor={getColor(index)}
+        >
+          {index + 1}
         </CarouselItem>
-      ))}
-    </Carousel>
+      )}
+    />
   );
 };
 
 export const DynamicItems = () => {
   const carouselRef = useRef<CarouselRef>(null);
-  const [items, setItems] = useState(() => Array.from({ length: 1 }));
+  const [items, setItems] = useState(() =>
+    Array.from({ length: 1 }).map((_, index) => ({ id: index }))
+  );
   const addItem = () => {
-    setItems((prev) => [...prev, undefined]);
+    setItems((prev) => [...prev, { id: prev.length }]);
   };
   const removeItem = () => {
     setItems((prev) => prev.slice(0, -1));
@@ -66,13 +85,19 @@ export const DynamicItems = () => {
     <>
       <Button onClick={() => removeItem()}>Remove Item</Button>
       <Button onClick={() => addItem()}>Add Item</Button>
-      <Carousel ref={carouselRef}>
-        {items.map((_, i) => (
-          <CarouselItem key={i} bgColor={getColor(i)}>
-            {i + 1}
+      <Carousel
+        ref={carouselRef}
+        items={items}
+        renderItem={({ item, index, isSnapPoint }) => (
+          <CarouselItem
+            key={item.id}
+            isSnapPoint={isSnapPoint}
+            bgColor={getColor(index)}
+          >
+            {index + 1}
           </CarouselItem>
-        ))}
-      </Carousel>
+        )}
+      />
     </>
   );
 };

@@ -8,19 +8,34 @@ const styles = require('./carousel.module.css');
  * This is an example Carousel built on top of `useSnapCarousel`
  */
 
-export interface CarouselProps {
+export interface CarouselProps<T> {
   readonly axis?: 'x' | 'y';
-  readonly children?: React.ReactNode;
+  readonly items: T[];
+  readonly renderItem: (props: CarouselRenderItemProps<T>) => React.ReactNode;
+}
+
+export interface CarouselRenderItemProps<T> {
+  readonly item: T;
+  readonly index: number;
+  readonly isSnapPoint: boolean;
 }
 
 export interface CarouselRef {
   readonly refresh: () => void;
 }
 
-export const Carousel = React.forwardRef<CarouselRef, CarouselProps>(
-  ({ children, axis } = {}, ref) => {
-    const { scrollRef, next, prev, goTo, pages, activePageIndex, refresh } =
-      useSnapCarousel({ axis });
+export const Carousel = React.forwardRef<CarouselRef, CarouselProps<unknown>>(
+  ({ axis, items, renderItem }, ref) => {
+    const {
+      scrollRef,
+      next,
+      prev,
+      goTo,
+      pages,
+      activePageIndex,
+      snapPointIndexes,
+      refresh
+    } = useSnapCarousel({ axis });
 
     useImperativeHandle(ref, () => ({ refresh }));
 
@@ -32,7 +47,13 @@ export const Carousel = React.forwardRef<CarouselRef, CarouselProps>(
         })}
       >
         <ul className={styles.scroll} ref={scrollRef}>
-          {children}
+          {items.map((item, index) =>
+            renderItem({
+              item,
+              index,
+              isSnapPoint: snapPointIndexes.has(index)
+            })
+          )}
         </ul>
         <div className={styles.pageIndicator}>
           {activePageIndex + 1} / {pages.length}
@@ -73,15 +94,20 @@ export const Carousel = React.forwardRef<CarouselRef, CarouselProps>(
       </div>
     );
   }
-);
+  // https://fettblog.eu/typescript-react-generic-forward-refs/
+) as <T extends any>(
+  props: CarouselProps<T> & { ref?: React.ForwardedRef<CarouselRef> }
+) => React.ReactElement;
 
 export interface CarouselItemProps {
+  readonly isSnapPoint: boolean;
   readonly bgColor: string;
   readonly width?: number;
   readonly children?: React.ReactNode;
 }
 
 export const CarouselItem = ({
+  isSnapPoint,
   bgColor,
   width,
   children
@@ -89,7 +115,11 @@ export const CarouselItem = ({
   return (
     <li
       className={styles.item}
-      style={{ backgroundColor: bgColor, width: width ?? '' }}
+      style={{
+        backgroundColor: bgColor,
+        width: width ?? '',
+        scrollSnapAlign: isSnapPoint ? 'start' : ''
+      }}
     >
       {children}
     </li>
