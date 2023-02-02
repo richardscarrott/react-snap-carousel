@@ -1,8 +1,15 @@
-import { useState, useCallback, useLayoutEffect, useEffect } from 'react';
+import {
+  useState,
+  useCallback,
+  useLayoutEffect,
+  useEffect,
+  useMemo
+} from 'react';
 
 export interface SnapCarouselResult {
   readonly pages: number[][];
   readonly activePageIndex: number;
+  readonly snapPointIndexes: Set<number>;
   readonly prev: () => void;
   readonly next: () => void;
   readonly goTo: (pageIndex: number) => void;
@@ -12,7 +19,6 @@ export interface SnapCarouselResult {
 
 export interface SnapCarouselOptions {
   readonly axis?: 'x' | 'y';
-  readonly snapPointClassName?: string;
 }
 
 interface SnapCarouselState {
@@ -21,8 +27,7 @@ interface SnapCarouselState {
 }
 
 export const useSnapCarousel = ({
-  axis = 'x',
-  snapPointClassName
+  axis = 'x'
 }: SnapCarouselOptions = {}): SnapCarouselResult => {
   const dimension = axis === 'x' ? 'width' : 'height';
   const scrollDimension = axis === 'x' ? 'scrollWidth' : 'scrollHeight';
@@ -173,44 +178,10 @@ export const useSnapCarousel = ({
     handleGoTo(activePageIndex + 1);
   };
 
-  // Render snap points
-  // NOTE: This could be handed off to the call site via a render prop, but as `scrollEl.children`
-  // is known to this hook, imperatively updating them seems reasonable and more useful.
-  useLayoutEffect(() => {
-    if (!scrollEl) {
-      return;
-    }
-    const setSnapPoint = (el: HTMLElement) =>
-      snapPointClassName
-        ? el.classList.add(snapPointClassName)
-        : (el.style.scrollSnapAlign = 'start');
-
-    const clearSnapPoint = (el: HTMLElement) =>
-      snapPointClassName
-        ? el.classList.remove(snapPointClassName)
-        : (el.style.scrollSnapAlign = '');
-
-    const items = Array.from(scrollEl.children);
-    const snapPointIndexes = new Set(pages.map((page) => page[0]));
-    items.forEach((item, i) => {
-      if (!(item instanceof HTMLElement)) {
-        return;
-      }
-      if (snapPointIndexes.has(i)) {
-        setSnapPoint(item);
-      } else {
-        clearSnapPoint(item);
-      }
-    });
-    return () => {
-      items.forEach((item) => {
-        if (!(item instanceof HTMLElement)) {
-          return;
-        }
-        clearSnapPoint(item);
-      });
-    };
-  }, [pages, scrollEl, snapPointClassName]);
+  const snapPointIndexes = useMemo(
+    () => new Set(pages.map((page) => page[0])),
+    [pages]
+  );
 
   return {
     prev: handlePrev,
@@ -219,6 +190,7 @@ export const useSnapCarousel = ({
     refresh,
     pages,
     activePageIndex,
+    snapPointIndexes,
     scrollRef: setScrollEl
   };
 };

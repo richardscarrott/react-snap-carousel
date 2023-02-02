@@ -8,19 +8,32 @@ const styles = require('./slideshow.module.css');
  * This is an example Carousel built on top of `useSnapCarousel`
  */
 
-export interface SlideShowProps {
-  readonly children?:
-    | React.ReactNode
-    | ((props: SlideShowRenderProps) => React.ReactNode);
+export interface SlideShowProps<T> {
+  readonly items: T[];
+  readonly renderItem: (props: SlideShowRenderItemProps<T>) => React.ReactNode;
 }
 
-export interface SlideShowRenderProps {
-  readonly activePageIndex: number;
+export interface SlideShowRenderItemProps<T> {
+  readonly item: T;
+  readonly index: number;
+  readonly isSnapPoint: boolean;
+  readonly isActive: boolean;
 }
 
-export const SlideShow = ({ children }: SlideShowProps = {}) => {
-  const { scrollRef, next, prev, goTo, pages, activePageIndex, refresh } =
-    useSnapCarousel();
+export const SlideShow = <T extends any>({
+  items,
+  renderItem
+}: SlideShowProps<T>) => {
+  const {
+    scrollRef,
+    next,
+    prev,
+    goTo,
+    pages,
+    activePageIndex,
+    snapPointIndexes,
+    refresh
+  } = useSnapCarousel();
 
   useEffect(() => {
     const handle = (e: KeyboardEvent) => {
@@ -44,9 +57,14 @@ export const SlideShow = ({ children }: SlideShowProps = {}) => {
   return (
     <div className={styles.root}>
       <ul className={styles.scroll} ref={scrollRef}>
-        {typeof children === 'function'
-          ? children({ activePageIndex })
-          : children}
+        {items.map((item, index) =>
+          renderItem({
+            item,
+            index,
+            isSnapPoint: snapPointIndexes.has(index),
+            isActive: activePageIndex === index
+          })
+        )}
       </ul>
       <div className={styles.pageIndicator}>
         {activePageIndex + 1} / {pages.length}
@@ -89,22 +107,25 @@ export const SlideShow = ({ children }: SlideShowProps = {}) => {
 };
 
 export interface SlideShowItemProps {
+  readonly isSnapPoint: boolean;
+  readonly isActive: boolean;
   readonly src: string;
   readonly title: string;
   readonly subtitle: string;
-  readonly active: boolean;
 }
 
 export const SlideShowItem = ({
+  isSnapPoint,
+  isActive,
   src,
-  active,
   title,
   subtitle
 }: SlideShowItemProps) => {
   return (
     <li
       className={classNames(styles.item, {
-        [styles.itemActive]: active
+        [styles.snapPoint]: isSnapPoint,
+        [styles.itemActive]: isActive
       })}
     >
       <div className={styles.itemText}>
