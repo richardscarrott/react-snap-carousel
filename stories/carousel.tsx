@@ -11,7 +11,9 @@ const styles = require('./carousel.module.css');
 export interface CarouselProps<T> {
   readonly axis?: 'x' | 'y';
   readonly items: T[];
-  readonly renderItem: (props: CarouselRenderItemProps<T>) => React.ReactNode;
+  readonly renderItem: (
+    props: CarouselRenderItemProps<T>
+  ) => React.ReactElement<CarouselItemProps>;
 }
 
 export interface CarouselRenderItemProps<T> {

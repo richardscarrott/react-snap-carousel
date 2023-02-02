@@ -32,7 +32,7 @@ npm install react-snap-carousel
 
 🔥[StoryBook Examples](https://richardscarrott.github.io/react-snap-carousel/)🔥
 
-✨[CodeSandbox StarterKit](https://codesandbox.io/s/react-snap-carousel-0zlvmw?file=/src/Carousel.tsx)✨
+✨[CodeSandbox StarterKit](https://codesandbox.io/s/react-snap-carousel-49vu6p?file=/src/Carousel.tsx)✨
 
 ## Usage
 
@@ -42,11 +42,11 @@ The following code snippet is a good starting point.
 
 > Inline styles are used for simplicity. You can use whichever CSS framework you prefer.
 
-> You can see it in action on [CodeSandbox](https://codesandbox.io/s/react-snap-carousel-0zlvmw?file=/src/Carousel.tsx).
+> You can see it in action on [CodeSandbox](https://codesandbox.io/s/react-snap-carousel-49vu6p?file=/src/Carousel.tsx).
 
 ```tsx
 // Carousel.tsx
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { useSnapCarousel } from 'react-snap-carousel';
 
 const styles = {
@@ -61,6 +61,9 @@ const styles = {
     width: '250px',
     height: '250px',
     flexShrink: 0
+  },
+  itemSnapPoint: {
+    scrollSnapAlign: 'start'
   },
   controls: {
     display: 'flex',
@@ -80,21 +83,44 @@ const styles = {
     display: 'flex',
     justifyContent: 'center'
   }
-};
+} satisfies Record<string, CSSProperties>;
 
-interface CarouselProps {
-  readonly children?: React.ReactNode;
+interface CarouselProps<T> {
+  readonly items: T[];
+  readonly renderItem: (
+    props: CarouselRenderItemProps<T>
+  ) => React.ReactElement<CarouselItemProps>;
 }
 
-export const Carousel = ({ children }: CarouselProps) => {
-  const { scrollRef, pages, activePageIndex, prev, next, goTo } =
-    useSnapCarousel();
+interface CarouselRenderItemProps<T> {
+  readonly item: T;
+  readonly isSnapPoint: boolean;
+}
+
+export const Carousel = <T extends any>({
+  items,
+  renderItem
+}: CarouselProps<T>) => {
+  const {
+    scrollRef,
+    pages,
+    activePageIndex,
+    prev,
+    next,
+    goTo,
+    snapPointIndexes
+  } = useSnapCarousel();
   return (
     <div style={styles.root}>
       <ul style={styles.scroll} ref={scrollRef}>
-        {children}
+        {items.map((item, i) =>
+          renderItem({
+            item,
+            isSnapPoint: snapPointIndexes.has(i)
+          })
+        )}
       </ul>
-      <div style={styles.controls}>
+      <div style={styles.controls} aria-hidden>
         <button
           style={{
             ...styles.nextPrevButton,
@@ -135,11 +161,19 @@ export const Carousel = ({ children }: CarouselProps) => {
 };
 
 interface CarouselItemProps {
+  readonly isSnapPoint: boolean;
   readonly children?: React.ReactNode;
 }
 
-export const CarouselItem = ({ children }: CarouselItemProps) => (
-  <li style={styles.item}>{children}</li>
+export const CarouselItem = ({ isSnapPoint, children }: CarouselItemProps) => (
+  <li
+    style={{
+      ...styles.item,
+      ...(isSnapPoint ? styles.itemSnapPoint : {})
+    }}
+  >
+    {children}
+  </li>
 );
 ```
 
@@ -147,18 +181,20 @@ export const CarouselItem = ({ children }: CarouselItemProps) => (
 // App.tsx
 import { Carousel, CarouselItem } from './Carousel';
 
-const items = Array.from({ length: 20 }).map(
-  (_, i) => `https://picsum.photos/500?idx=${i}`
-);
+const items = Array.from({ length: 20 }).map((_, i) => ({
+  id: i,
+  src: `https://picsum.photos/500?idx=${i}`
+}));
 
 const App = () => (
-  <Carousel>
-    {items.map((imgSrc) => (
-      <CarouselItem>
-        <img src={imgSrc} width="250" height="250" />
+  <Carousel
+    items={items}
+    renderItem={({ item, isSnapPoint }) => (
+      <CarouselItem isSnapPoint={isSnapPoint}>
+        <img src={item.src} width="250" height="250" alt="" />
       </CarouselItem>
-    ))}
-  </Carousel>
+    )}
+  />
 );
 
 export default App;

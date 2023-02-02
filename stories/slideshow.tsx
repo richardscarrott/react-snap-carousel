@@ -10,7 +10,9 @@ const styles = require('./slideshow.module.css');
 
 export interface SlideShowProps<T> {
   readonly items: T[];
-  readonly renderItem: (props: SlideShowRenderItemProps<T>) => React.ReactNode;
+  readonly renderItem: (
+    props: SlideShowRenderItemProps<T>
+  ) => React.ReactElement<SlideShowItemProps>;
 }
 
 export interface SlideShowRenderItemProps<T> {
