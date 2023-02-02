@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
           {Array.from({ length: 16 }).map((item, i) => (
             <li
               style={{
-                scrollSnapPoint: snapPointIndexes.has(i) ? 'start' : ''
+                scrollSnapAlign: snapPointIndexes.has(i) ? 'start' : ''
               }}
             >
               {item}
