@@ -2,6 +2,10 @@
   position: relative;
 }
 
+.scrollPadding {
+  margin: 0 -1rem; /* bust out of storybook margin (to demonstrate full bleed carousel) */
+}
+
 .scroll {
   position: relative;
   display: flex;
@@ -9,6 +13,13 @@
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  box-sizing: border-box;
+  overscroll-behavior: contain;
+}
+
+.scrollPadding .scroll {
+  scroll-padding: 0 5%;
+  padding: 0 5%;
 }
 
 .scroll::-webkit-scrollbar {
@@ -21,7 +32,13 @@
   position: relative;
   padding-bottom: 56.25%;
   overflow: hidden;
+  /* margin: 0 1%; */
 }
+
+/* .item:first-child,
+.item:last-child {
+  margin: 0;
+} */
 
 .snapPoint {
   scroll-snap-align: start;

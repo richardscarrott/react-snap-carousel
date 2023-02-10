@@ -18,9 +18,9 @@
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  /* TODO: Add better support for scroll-padding / scroll-margin */
-  /* scroll-padding: 0 1rem;
-  padding: 0 1rem; */
+  overscroll-behavior: contain;
+  scroll-padding: 0 16px;
+  padding: 0 16px;
 }
 
 .scroll::-webkit-scrollbar {
@@ -30,8 +30,8 @@
 .y .scroll {
   display: block;
   scroll-snap-type: y mandatory;
-  scroll-padding: 1rem 0;
-  padding: 1rem 0 0 0;
+  scroll-padding: 16px 0;
+  padding: 16px 0;
 }
 
 .item {
