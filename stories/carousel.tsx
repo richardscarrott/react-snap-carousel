@@ -14,6 +14,7 @@ export interface CarouselProps<T> {
   readonly renderItem: (
     props: CarouselRenderItemProps<T>
   ) => React.ReactElement<CarouselItemProps>;
+  readonly scrollMargin?: boolean;
 }
 
 export interface CarouselRenderItemProps<T> {
@@ -27,7 +28,7 @@ export interface CarouselRef {
 }
 
 export const Carousel = React.forwardRef<CarouselRef, CarouselProps<unknown>>(
-  ({ axis, items, renderItem }, ref) => {
+  ({ axis, items, renderItem, scrollMargin = false }, ref) => {
     const {
       scrollRef,
       next,
@@ -45,7 +46,8 @@ export const Carousel = React.forwardRef<CarouselRef, CarouselProps<unknown>>(
       <div
         className={classNames(styles.root, {
           [styles.x]: axis === 'x',
-          [styles.y]: axis === 'y'
+          [styles.y]: axis === 'y',
+          [styles.scrollMargin]: scrollMargin
         })}
       >
         <ul className={styles.scroll} ref={scrollRef}>

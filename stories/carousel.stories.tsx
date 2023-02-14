@@ -64,6 +64,25 @@ export const VerticalAxis = () => {
   );
 };
 
+export const ScrollMargin = () => {
+  const items = Array.from({ length: 18 }).map((_, index) => ({ id: index }));
+  return (
+    <Carousel
+      items={items}
+      renderItem={({ item, index, isSnapPoint }) => (
+        <CarouselItem
+          key={item.id}
+          isSnapPoint={isSnapPoint}
+          bgColor={getColor(index)}
+        >
+          {index + 1}
+        </CarouselItem>
+      )}
+      scrollMargin
+    />
+  );
+};
+
 export const DynamicItems = () => {
   const carouselRef = useRef<CarouselRef>(null);
   const [items, setItems] = useState(() =>
