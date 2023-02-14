@@ -203,7 +203,7 @@ export default App;
 
 ## Api
 
-### `useSnapCarousel`
+### `useSnapCarousel(options)`
 
 #### Parameters
 
