@@ -13,6 +13,7 @@ export interface SlideShowProps<T> {
   readonly renderItem: (
     props: SlideShowRenderItemProps<T>
   ) => React.ReactElement<SlideShowItemProps>;
+  readonly scrollPadding?: boolean;
 }
 
 export interface SlideShowRenderItemProps<T> {
@@ -24,7 +25,8 @@ export interface SlideShowRenderItemProps<T> {
 
 export const SlideShow = <T extends any>({
   items,
-  renderItem
+  renderItem,
+  scrollPadding = false
 }: SlideShowProps<T>) => {
   const {
     scrollRef,
@@ -57,7 +59,11 @@ export const SlideShow = <T extends any>({
   }, [next, prev]);
 
   return (
-    <div className={styles.root}>
+    <div
+      className={classNames(styles.root, {
+        [styles.scrollPadding]: scrollPadding
+      })}
+    >
       <ul className={styles.scroll} ref={scrollRef}>
         {items.map((item, index) =>
           renderItem({

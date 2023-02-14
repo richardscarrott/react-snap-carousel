@@ -67,9 +67,15 @@ export const useSnapCarousel = ({
       const offsets = pages.map((page) => {
         const leadIndex = page[0];
         const leadEl = items[leadIndex];
+        assert(leadEl instanceof HTMLElement, 'Expected HTMLElement');
+        const scrollPadding = getEffectiveScrollPadding(
+          scrollEl,
+          leadEl,
+          nearSidePos
+        );
         const rect = leadEl.getBoundingClientRect();
-        // TODO: Factor in scrollMargin & scrollPadding here
-        const offset = rect[nearSidePos] - scrollPort[nearSidePos];
+        const offset =
+          rect[nearSidePos] - scrollPort[nearSidePos] - scrollPadding;
         return Math.abs(offset);
       });
       const minOffset = Math.min(...offsets);
@@ -85,23 +91,22 @@ export const useSnapCarousel = ({
     }
     const items = Array.from(scrollEl.children);
     const scrollPort = scrollEl.getBoundingClientRect();
-    let currPageStartPos = 0;
+    let currPageStartPos: number;
     const pages = items.reduce<number[][]>((acc, item, i) => {
-      if (i === 0) {
-        acc.push([i]);
-        // NOTE: The `currPageStartPos` is always 0 for the first page, even if there's
-        // scroll padding / margin, hence we early return.
-        return acc;
-      }
+      assert(item instanceof HTMLElement, 'Expected HTMLElement');
       const currPage = acc[acc.length - 1];
       const rect = getOffsetRect(item, item.parentElement);
+      const scrollPadding = getEffectiveScrollPadding(
+        scrollEl,
+        item,
+        nearSidePos
+      );
       if (
-        rect[farSidePos] - currPageStartPos >
-        Math.ceil(scrollPort[dimension])
+        !currPage ||
+        rect[farSidePos] - currPageStartPos > Math.ceil(scrollPort[dimension])
       ) {
         acc.push([i]);
-        // TODO: Factor in scrollMargin & scrollPadding here
-        currPageStartPos = rect[nearSidePos];
+        currPageStartPos = rect[nearSidePos] - scrollPadding;
       } else {
         currPage.push(i);
       }
@@ -124,7 +129,7 @@ export const useSnapCarousel = ({
   // On resize we need to refresh the state
   useEffect(() => {
     const handle = () => {
-      // TODO: Consider debouncing
+      // TODO: Consider debouncing / throttling
       refresh();
     };
     window.addEventListener('resize', handle);
@@ -141,7 +146,7 @@ export const useSnapCarousel = ({
       return;
     }
     const handle = () => {
-      // TODO: Consider debouncing
+      // TODO: Consider debouncing / throttling
       refreshActivePage(pages);
     };
     scrollEl.addEventListener('scroll', handle);
@@ -164,9 +169,16 @@ export const useSnapCarousel = ({
     if (!(leadEl instanceof HTMLElement)) {
       return;
     }
+    const scrollPadding = getEffectiveScrollPadding(
+      scrollEl,
+      leadEl,
+      nearSidePos
+    );
+    // NOTE: I've tried `leadEl.scrollIntoView` but it often fails in chrome on Mac OS.
     scrollEl.scrollTo({
       behavior: 'smooth',
-      [nearSidePos]: getOffsetRect(leadEl, leadEl.parentElement)[nearSidePos]
+      [nearSidePos]:
+        getOffsetRect(leadEl, leadEl.parentElement)[nearSidePos] - scrollPadding
     });
   };
 
@@ -238,3 +250,51 @@ const _getOffsetRect = (el: Element) => {
     height: rect.height
   };
 };
+
+//  `window.getComputedStyle` gives us the *computed* value for scroll-padding-* so we have
+// to convert it to the used value (i.e. px value) ourselves :(
+const getScrollPaddingUsedValue = (el: HTMLElement, pos: 'left' | 'top') => {
+  const style = window.getComputedStyle(el);
+  const scrollPadding = style.getPropertyValue(`scroll-padding-${pos}`);
+  if (scrollPadding === 'auto') {
+    return 0;
+  }
+  const invalidMsg = `Unsupported scroll padding value, supported units are 'px' or '%', received ${scrollPadding}`;
+  if (scrollPadding.endsWith('px')) {
+    const value = parseInt(scrollPadding);
+    assert(!Number.isNaN(value), invalidMsg);
+    return value;
+  }
+  if (scrollPadding.endsWith('%')) {
+    const value = parseInt(scrollPadding);
+    assert(!Number.isNaN(value), invalidMsg);
+    return (el.clientWidth / 100) * value;
+  }
+  throw new RSCError(invalidMsg);
+};
+
+// The 'effective' scroll padding is the actual padding that will be used for a specific item
+// after factoring in whether there is enough scroll width available.
+// TODO: Consider factoring in an item's scroll-margin too.
+const getEffectiveScrollPadding = (
+  scrollEl: HTMLElement,
+  itemEl: HTMLElement,
+  pos: 'left' | 'top'
+) => {
+  const scrollPadding = getScrollPaddingUsedValue(scrollEl, pos);
+  const rect = getOffsetRect(itemEl, itemEl.parentElement);
+  return Math.min(scrollPadding, rect[pos]);
+};
+
+function assert(value: any, message: string): asserts value {
+  if (value) {
+    return;
+  }
+  throw new RSCError(message);
+}
+
+class RSCError extends Error {
+  constructor(message: string) {
+    super(`[react-snap-carousel]: ${message}`);
+  }
+}
