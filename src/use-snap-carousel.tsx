@@ -19,6 +19,7 @@ export interface SnapCarouselResult {
 
 export interface SnapCarouselOptions {
   readonly axis?: 'x' | 'y';
+  readonly initialPages?: number[][];
 }
 
 interface SnapCarouselState {
@@ -27,7 +28,8 @@ interface SnapCarouselState {
 }
 
 export const useSnapCarousel = ({
-  axis = 'x'
+  axis = 'x',
+  initialPages = []
 }: SnapCarouselOptions = {}): SnapCarouselResult => {
   const dimension = axis === 'x' ? 'width' : 'height';
   const scrollDimension = axis === 'x' ? 'scrollWidth' : 'scrollHeight';
@@ -42,7 +44,7 @@ export const useSnapCarousel = ({
   // not implicitly rely on set state batching)
   const [{ pages, activePageIndex }, setCarouselState] =
     useState<SnapCarouselState>({
-      pages: [],
+      pages: initialPages,
       activePageIndex: 0
     });
 
