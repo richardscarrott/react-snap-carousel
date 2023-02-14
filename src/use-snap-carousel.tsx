@@ -68,14 +68,14 @@ export const useSnapCarousel = ({
         const leadIndex = page[0];
         const leadEl = items[leadIndex];
         assert(leadEl instanceof HTMLElement, 'Expected HTMLElement');
-        const scrollPadding = getEffectiveScrollPadding(
+        const scrollSpacing = getEffectiveScrollSpacing(
           scrollEl,
           leadEl,
           nearSidePos
         );
         const rect = leadEl.getBoundingClientRect();
         const offset =
-          rect[nearSidePos] - scrollPort[nearSidePos] - scrollPadding;
+          rect[nearSidePos] - scrollPort[nearSidePos] - scrollSpacing;
         return Math.abs(offset);
       });
       const minOffset = Math.min(...offsets);
@@ -96,17 +96,17 @@ export const useSnapCarousel = ({
       assert(item instanceof HTMLElement, 'Expected HTMLElement');
       const currPage = acc[acc.length - 1];
       const rect = getOffsetRect(item, item.parentElement);
-      const scrollPadding = getEffectiveScrollPadding(
-        scrollEl,
-        item,
-        nearSidePos
-      );
       if (
         !currPage ||
         rect[farSidePos] - currPageStartPos > Math.ceil(scrollPort[dimension])
       ) {
         acc.push([i]);
-        currPageStartPos = rect[nearSidePos] - scrollPadding;
+        const scrollSpacing = getEffectiveScrollSpacing(
+          scrollEl,
+          item,
+          nearSidePos
+        );
+        currPageStartPos = rect[nearSidePos] - scrollSpacing;
       } else {
         currPage.push(i);
       }
@@ -169,7 +169,7 @@ export const useSnapCarousel = ({
     if (!(leadEl instanceof HTMLElement)) {
       return;
     }
-    const scrollPadding = getEffectiveScrollPadding(
+    const scrollSpacing = getEffectiveScrollSpacing(
       scrollEl,
       leadEl,
       nearSidePos
@@ -178,7 +178,7 @@ export const useSnapCarousel = ({
     scrollEl.scrollTo({
       behavior: 'smooth',
       [nearSidePos]:
-        getOffsetRect(leadEl, leadEl.parentElement)[nearSidePos] - scrollPadding
+        getOffsetRect(leadEl, leadEl.parentElement)[nearSidePos] - scrollSpacing
     });
   };
 
@@ -253,13 +253,16 @@ const _getOffsetRect = (el: Element) => {
 
 //  `window.getComputedStyle` gives us the *computed* value for scroll-padding-* so we have
 // to convert it to the used value (i.e. px value) ourselves :(
+// https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-padding
 const getScrollPaddingUsedValue = (el: HTMLElement, pos: 'left' | 'top') => {
   const style = window.getComputedStyle(el);
   const scrollPadding = style.getPropertyValue(`scroll-padding-${pos}`);
   if (scrollPadding === 'auto') {
     return 0;
   }
-  const invalidMsg = `Unsupported scroll padding value, supported units are 'px' or '%', received ${scrollPadding}`;
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/length
+  // https://www.w3.org/TR/css3-values/#length-value
+  const invalidMsg = `Unsupported scroll padding value, expected <length> or <percentage> value, received ${scrollPadding}`;
   if (scrollPadding.endsWith('px')) {
     const value = parseInt(scrollPadding);
     assert(!Number.isNaN(value), invalidMsg);
@@ -270,20 +273,36 @@ const getScrollPaddingUsedValue = (el: HTMLElement, pos: 'left' | 'top') => {
     assert(!Number.isNaN(value), invalidMsg);
     return (el.clientWidth / 100) * value;
   }
+  // e.g. calc(10% + 10px) // NOTE: We could in theory resolve this...
   throw new RSCError(invalidMsg);
 };
 
-// The 'effective' scroll padding is the actual padding that will be used for a specific item
-// after factoring in whether there is enough scroll width available.
-// TODO: Consider factoring in an item's scroll-margin too.
-const getEffectiveScrollPadding = (
+// Unlike scroll-padding, scroll-margin doesn't support <percentage> values, so we should always
+// get back a px value, meaning it's effectively already the *used* value.
+// https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin
+const getScrollMarginUsedValue = (el: HTMLElement, pos: 'left' | 'top') => {
+  const style = window.getComputedStyle(el);
+  const scrollMargin = style.getPropertyValue(`scroll-margin-${pos}`);
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/length
+  // https://www.w3.org/TR/css3-values/#length-value
+  const invalidMsg = `Unsupported scroll margin value, expected <length> value, received ${scrollMargin}`;
+  assert(scrollMargin.endsWith('px'), invalidMsg); // Even scroll-margin: 0 should return "0px"
+  const value = parseInt(scrollMargin);
+  assert(!Number.isNaN(value), invalidMsg);
+  return value;
+};
+
+// The 'effective' scroll spacing is the actual scroll padding + margin that will be used for a
+// given item after factoring in whether there is enough scroll width available.
+const getEffectiveScrollSpacing = (
   scrollEl: HTMLElement,
   itemEl: HTMLElement,
   pos: 'left' | 'top'
 ) => {
   const scrollPadding = getScrollPaddingUsedValue(scrollEl, pos);
+  const scrollMargin = getScrollMarginUsedValue(itemEl, pos);
   const rect = getOffsetRect(itemEl, itemEl.parentElement);
-  return Math.min(scrollPadding, rect[pos]);
+  return Math.min(scrollPadding + scrollMargin, rect[pos]);
 };
 
 function assert(value: any, message: string): asserts value {
