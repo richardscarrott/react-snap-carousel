@@ -132,6 +132,7 @@ export const Carousel = <T extends any>({
         </button>
         {pages.map((_, i) => (
           <button
+            key={i}
             style={{
               ...styles.paginationButton,
               ...(activePageIndex === i ? styles.paginationButtonActive : {})
@@ -198,6 +199,38 @@ const App = () => (
 );
 
 export default App;
+```
+
+## Api
+
+### `useSnapCarousel`
+
+#### Parameters
+
+##### Options
+
+```ts
+interface SnapCarouselOptions {
+  // Horizontal or vertical carousel
+  readonly axis?: 'x' | 'y';
+  // Allows you to render pagination during SSR
+  readonly initialPages?: number[][];
+}
+```
+
+#### Return value
+
+```ts
+export interface SnapCarouselResult {
+  readonly pages: number[][];
+  readonly activePageIndex: number;
+  readonly snapPointIndexes: Set<number>;
+  readonly prev: () => void;
+  readonly next: () => void;
+  readonly goTo: (pageIndex: number) => void;
+  readonly refresh: () => void;
+  readonly scrollRef: (el: HTMLElement | null) => void;
+}
 ```
 
 ## License
