@@ -191,7 +191,7 @@ const App = () => (
   <Carousel
     items={items}
     renderItem={({ item, isSnapPoint }) => (
-      <CarouselItem isSnapPoint={isSnapPoint}>
+      <CarouselItem key={item.id} isSnapPoint={isSnapPoint}>
         <img src={item.src} width="250" height="250" alt="" />
       </CarouselItem>
     )}
