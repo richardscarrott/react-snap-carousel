@@ -1,5 +1,6 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Carousel, CarouselItem, CarouselRef } from './carousel';
+import { Button } from './lib/button';
 
 export default {
   title: 'Carousel',
@@ -102,8 +103,10 @@ export const DynamicItems = () => {
   }, [items]);
   return (
     <>
-      <Button onClick={() => removeItem()}>Remove Item</Button>
-      <Button onClick={() => addItem()}>Add Item</Button>
+      <div style={{ display: 'flex', gap: '10px', margin: '0 0 10px' }}>
+        <Button onClick={() => removeItem()}>Remove Item</Button>
+        <Button onClick={() => addItem()}>Add Item</Button>
+      </div>
       <Carousel
         ref={carouselRef}
         items={items}
@@ -125,30 +128,4 @@ export const DynamicItems = () => {
 
 const getColor = (i: number) => {
   return `hsl(${i * 12} 100% 50%)`;
-};
-
-interface ButtonProps {
-  readonly children?: React.ReactNode;
-  readonly onClick?: () => void;
-}
-
-const Button = ({ children, onClick }: ButtonProps) => {
-  return (
-    <button
-      style={{
-        background: '#04bfad',
-        textTransform: 'uppercase',
-        fontWeight: 'bold',
-        color: '#fff',
-        padding: 10,
-        marginRight: 5,
-        marginBottom: 20,
-        fontSize: 16,
-        borderRadius: 5
-      }}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
 };

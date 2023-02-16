@@ -5,5 +5,7 @@ export const parameters = {
       color: /(background|color)$/i,
       date: /Date$/
     }
-  }
+  },
+  sourceLink: 'https://github.com/richardscarrott/react-snap-carousel',
+  sourceLinkIcon: 'github'
 };

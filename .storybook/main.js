@@ -5,9 +5,17 @@ module.exports = {
   ],
   addons: [
     '@storybook/addon-links',
-    '@storybook/addon-essentials',
-    '@storybook/addon-interactions',
-    'storybook-css-modules'
+    {
+      name: '@storybook/addon-essentials',
+      options: {
+        actions: false,
+        controls: false,
+        docs: false,
+        toolbars: false
+      }
+    },
+    'storybook-css-modules',
+    '@riscarrott/storybook-source-link'
   ],
   framework: '@storybook/react'
 };

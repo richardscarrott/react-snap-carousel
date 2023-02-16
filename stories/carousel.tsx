@@ -64,7 +64,7 @@ export const Carousel = React.forwardRef<CarouselRef, CarouselProps<unknown>>(
         </div>
         <div className={styles.controls}>
           <button
-            disabled={activePageIndex === 0}
+            disabled={activePageIndex <= 0}
             onClick={() => prev()}
             className={styles.prevButton}
           >

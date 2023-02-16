@@ -1,7 +1,7 @@
 {
   "name": "react-snap-carousel",
   "version": "0.3.1",
-  "description": "DOM-first, responsive carousel for React, utilizing native browser scrolling & CSS scroll snap points",
+  "description": "DOM-first, headless carousel for React, utilizing native browser scrolling & CSS scroll snap points",
   "author": {
     "name": "Richard Scarrott",
     "url": "https://richardscarrott.com"
@@ -21,15 +21,24 @@
     "react",
     "carousel",
     "responsive",
+    "headless",
     "snap",
     "scroll",
-    "scrolling"
+    "scrolling",
+    "scroller",
+    "swipe",
+    "swiper",
+    "slide",
+    "slider",
+    "slideshow",
+    "gallery"
   ],
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.5",
+    "@riscarrott/storybook-source-link": "^2.0.5",
     "@storybook/addon-actions": "^6.5.14",
     "@storybook/addon-essentials": "^6.5.14",
     "@storybook/addon-interactions": "^6.5.14",

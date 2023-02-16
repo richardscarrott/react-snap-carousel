@@ -1,0 +1,15 @@
+.root {
+  background: #04bfad;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #fff;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.root:hover,
+.root:focus-visible {
+  opacity: 0.7;
+}

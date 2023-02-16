@@ -4,7 +4,7 @@
 [![CI](https://github.com/richardscarrott/react-snap-carousel/actions/workflows/node.js.yml/badge.svg)](https://github.com/richardscarrott/react-snap-carousel/actions/workflows/node.js.yml)
 [![GitHub license](https://img.shields.io/github/license/richardscarrott/react-snap-carousel.svg)](https://github.com/richardscarrott/react-snap-carousel/blob/main/LICENSE)
 
-DOM-first, responsive carousel for React.
+DOM-first, headless carousel for React.
 
 React Snap Carousel leaves the DOM in charge of scrolling and simply computes derived state from the layout, allowing you to progressively enhance a scroll element with responsive carousel controls.
 
@@ -16,11 +16,11 @@ React Snap Carousel leaves the DOM in charge of scrolling and simply computes de
 
 📲 Dynamic page-based CSS snap point rendering
 
-🎛 Full control over UI using React Hooks API
+🙈 Headless design, giving you full control over UI using React Hooks API
 
 🖋️ Written in TypeScript
 
-☕️ [Lightweight (~1kB)](https://bundlephobia.com/package/react-snap-carousel) + zero dependencies
+🪶 [Lightweight (~1kB)](https://bundlephobia.com/package/react-snap-carousel) + zero dependencies
 
 ## Install
 
@@ -28,11 +28,13 @@ React Snap Carousel leaves the DOM in charge of scrolling and simply computes de
 npm install react-snap-carousel
 ```
 
-## Examples
+## Resources
 
 🔥[StoryBook Examples](https://richardscarrott.github.io/react-snap-carousel/)🔥
 
-✨[CodeSandbox StarterKit](https://codesandbox.io/s/react-snap-carousel-49vu6p?file=/src/Carousel.tsx)✨
+[CodeSandbox StarterKit](https://codesandbox.io/s/react-snap-carousel-49vu6p?file=/src/Carousel.tsx)
+
+[Beginners Tutorial](https://dev.to/richardscarrott/build-your-own-carousel-component-with-react-snap-carousel-1e11)
 
 ## Usage
 
@@ -124,7 +126,7 @@ export const Carousel = <T extends any>({
         <button
           style={{
             ...styles.nextPrevButton,
-            ...(activePageIndex === 0 ? styles.nextPrevButtonDisabled : {})
+            ...(activePageIndex <= 0 ? styles.nextPrevButtonDisabled : {})
           }}
           onClick={() => prev()}
         >
