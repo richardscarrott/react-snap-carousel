@@ -1,10 +1,11 @@
 import {
   useState,
   useCallback,
-  useLayoutEffect,
   useEffect,
   useMemo
 } from 'react';
+
+import { useIsomorphicLayoutEffect } from './use-isomorphic-layout-effect';
 
 export interface SnapCarouselResult {
   readonly pages: number[][];
@@ -124,7 +125,7 @@ export const useSnapCarousel = ({
     scrollPos
   ]);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     refresh();
   }, [refresh]);
 
