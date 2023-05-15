@@ -54,6 +54,8 @@
     "babel-loader": "^8.3.0",
     "classnames": "^2.3.2",
     "esbuild": "^0.15.7",
+    "eslint": "^8.40.0",
+    "eslint-config-react-app": "^7.0.1",
     "jest": "^29.0.3",
     "jest-environment-jsdom": "^29.3.1",
     "prettier": "^2.7.1",
@@ -67,7 +69,8 @@
   "scripts": {
     "build": "tsup src/use-snap-carousel.tsx --format esm,cjs --dts --clean",
     "test": "jest",
-    "prepublishOnly": "npm run test && npm run build",
+    "lint": "eslint src/** && prettier --check src/**",
+    "prepublishOnly": "npm run lint && npm run test && npm run build",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook -o docs"
   },
