@@ -1,10 +1,4 @@
-import {
-  useState,
-  useCallback,
-  useEffect,
-  useMemo
-} from 'react';
-
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useIsomorphicLayoutEffect } from './use-isomorphic-layout-effect';
 
 export interface SnapCarouselResult {
