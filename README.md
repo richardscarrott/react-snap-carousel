@@ -1,6 +1,7 @@
 # React Snap Carousel 🫰
 
 [![GitHub package.json version](https://img.shields.io/github/package-json/v/richardscarrott/react-snap-carousel.svg)](https://www.npmjs.com/package/react-snap-carousel)
+[![npm downloads](https://img.shields.io/npm/dw/react-snap-carousel)](https://www.npmjs.com/package/react-snap-carousel)
 [![CI](https://github.com/richardscarrott/react-snap-carousel/actions/workflows/node.js.yml/badge.svg)](https://github.com/richardscarrott/react-snap-carousel/actions/workflows/node.js.yml)
 [![GitHub license](https://img.shields.io/github/license/richardscarrott/react-snap-carousel.svg)](https://github.com/richardscarrott/react-snap-carousel/blob/main/LICENSE)
 
