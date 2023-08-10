@@ -15,6 +15,7 @@ export interface SnapCarouselResult {
 export interface SnapCarouselOptions {
   readonly axis?: 'x' | 'y';
   readonly initialPages?: number[][];
+  readonly refreshCondition?: () => boolean;
 }
 
 interface SnapCarouselState {
@@ -24,7 +25,8 @@ interface SnapCarouselState {
 
 export const useSnapCarousel = ({
   axis = 'x',
-  initialPages = []
+  initialPages = [],
+  refreshCondition = () => true
 }: SnapCarouselOptions = {}): SnapCarouselResult => {
   const dimension = axis === 'x' ? 'width' : 'height';
   const scrollDimension = axis === 'x' ? 'scrollWidth' : 'scrollHeight';
@@ -83,7 +85,7 @@ export const useSnapCarousel = ({
   );
 
   const refresh = useCallback(() => {
-    if (!scrollEl) {
+    if (!scrollEl || !refreshCondition()) {
       return;
     }
     const items = Array.from(scrollEl.children);
