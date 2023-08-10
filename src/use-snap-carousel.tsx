@@ -112,7 +112,7 @@ export const useSnapCarousel = ({
       return acc;
     }, []);
     refreshActivePage(pages);
-  }, [refreshActivePage, scrollEl, dimension, farSidePos, nearSidePos]);
+  }, [refreshActivePage, scrollEl, dimension, farSidePos, nearSidePos, refreshCondition]);
 
   useIsomorphicLayoutEffect(() => {
     refresh();
