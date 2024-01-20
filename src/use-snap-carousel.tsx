@@ -1,13 +1,23 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useIsomorphicLayoutEffect } from './use-isomorphic-layout-effect';
 
+interface SnapCarouselGoToOptions {
+  /**
+   * The scroll behavior of the navigation
+   * when prompted to navigate to another page.
+   *
+   * @default 'smooth'
+   */
+  readonly behavior?: ScrollBehavior;
+}
+
 export interface SnapCarouselResult {
   readonly pages: number[][];
   readonly activePageIndex: number;
   readonly snapPointIndexes: Set<number>;
-  readonly prev: () => void;
-  readonly next: () => void;
-  readonly goTo: (pageIndex: number) => void;
+  readonly prev: (opts?: SnapCarouselGoToOptions) => void;
+  readonly next: (opts?: SnapCarouselGoToOptions) => void;
+  readonly goTo: (pageIndex: number, opts?: SnapCarouselGoToOptions) => void;
   readonly refresh: () => void;
   readonly scrollRef: (el: HTMLElement | null) => void;
 }
@@ -145,7 +155,7 @@ export const useSnapCarousel = ({
     };
   }, [refreshActivePage, pages, scrollEl]);
 
-  const handleGoTo = (index: number) => {
+  const handleGoTo = (index: number, opts?: SnapCarouselGoToOptions) => {
     if (!scrollEl) {
       return;
     }
@@ -164,20 +174,22 @@ export const useSnapCarousel = ({
       leadEl,
       nearSidePos
     );
+
+    const behavior = opts?.behavior || 'smooth';
     // NOTE: I've tried `leadEl.scrollIntoView` but it often fails in chrome on Mac OS.
     scrollEl.scrollTo({
-      behavior: 'smooth',
+      behavior,
       [nearSidePos]:
         getOffsetRect(leadEl, leadEl.parentElement)[nearSidePos] - scrollSpacing
     });
   };
 
-  const handlePrev = () => {
-    handleGoTo(activePageIndex - 1);
+  const handlePrev = (opts?: SnapCarouselGoToOptions) => {
+    handleGoTo(activePageIndex - 1, opts);
   };
 
-  const handleNext = () => {
-    handleGoTo(activePageIndex + 1);
+  const handleNext = (opts?: SnapCarouselGoToOptions) => {
+    handleGoTo(activePageIndex + 1, opts);
   };
 
   const snapPointIndexes = useMemo(

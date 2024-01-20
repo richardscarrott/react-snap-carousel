@@ -228,9 +228,9 @@ export interface SnapCarouselResult {
   readonly pages: number[][];
   readonly activePageIndex: number;
   readonly snapPointIndexes: Set<number>;
-  readonly prev: () => void;
-  readonly next: () => void;
-  readonly goTo: (pageIndex: number) => void;
+  readonly prev: (opts?: SnapCarouselGoToOptions) => void;
+  readonly next: (opts?: SnapCarouselGoToOptions) => void;
+  readonly goTo: (pageIndex: number, opts?: SnapCarouselGoToOptions) => void;
   readonly refresh: () => void;
   readonly scrollRef: (el: HTMLElement | null) => void;
 }
