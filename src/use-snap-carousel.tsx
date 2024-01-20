@@ -5,7 +5,7 @@ interface SnapCarouselGoToOptions {
   /**
    * The scroll behavior of the navigation
    * when prompted to navigate to another page.
-   * 
+   *
    * @default 'smooth'
    */
   readonly behavior?: ScrollBehavior;
@@ -175,7 +175,7 @@ export const useSnapCarousel = ({
       nearSidePos
     );
 
-    const behavior = opts?.behavior || 'smooth'
+    const behavior = opts?.behavior || 'smooth';
     // NOTE: I've tried `leadEl.scrollIntoView` but it often fails in chrome on Mac OS.
     scrollEl.scrollTo({
       behavior,
