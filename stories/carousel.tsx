@@ -15,6 +15,7 @@ export interface CarouselProps<T> {
     props: CarouselRenderItemProps<T>
   ) => React.ReactElement<CarouselItemProps>;
   readonly scrollMargin?: boolean;
+  readonly scrollBehavior?: ScrollBehavior;
 }
 
 export interface CarouselRenderItemProps<T> {
@@ -28,7 +29,7 @@ export interface CarouselRef {
 }
 
 export const Carousel = React.forwardRef<CarouselRef, CarouselProps<unknown>>(
-  ({ axis, items, renderItem, scrollMargin = false }, ref) => {
+  ({ axis, items, renderItem, scrollMargin = false, scrollBehavior }, ref) => {
     const {
       scrollRef,
       next,
@@ -65,7 +66,7 @@ export const Carousel = React.forwardRef<CarouselRef, CarouselProps<unknown>>(
         <div className={styles.controls}>
           <button
             disabled={activePageIndex <= 0}
-            onClick={() => prev()}
+            onClick={() => prev({ behavior: scrollBehavior })}
             className={styles.prevButton}
           >
             {String.fromCharCode(8592)}
@@ -80,7 +81,7 @@ export const Carousel = React.forwardRef<CarouselRef, CarouselProps<unknown>>(
               >
                 <button
                   className={styles.paginationButton}
-                  onClick={() => goTo(i)}
+                  onClick={() => goTo(i, { behavior: scrollBehavior })}
                 >
                   {i + 1}
                 </button>
@@ -89,7 +90,7 @@ export const Carousel = React.forwardRef<CarouselRef, CarouselProps<unknown>>(
           </ol>
           <button
             disabled={activePageIndex === pages.length - 1}
-            onClick={() => next()}
+            onClick={() => next({ behavior: scrollBehavior })}
             className={styles.nextButton}
           >
             {String.fromCharCode(8594)}

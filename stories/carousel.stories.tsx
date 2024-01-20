@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Carousel, CarouselItem, CarouselRef } from './carousel';
 import { Button } from './lib/button';
+import { Select } from './lib/select';
 
 export default {
   title: 'Carousel',
@@ -109,6 +110,43 @@ export const DynamicItems = () => {
       </div>
       <Carousel
         ref={carouselRef}
+        items={items}
+        renderItem={({ item, index, isSnapPoint }) => (
+          <CarouselItem
+            key={item.id}
+            isSnapPoint={isSnapPoint}
+            bgColor={getColor(index)}
+          >
+            {index + 1}
+          </CarouselItem>
+        )}
+      />
+    </>
+  );
+};
+
+export const ScrollBehavior = () => {
+  const scrollBehaviors: ScrollBehavior[] = ['smooth', 'instant', 'auto'];
+  const [scrollBehavior, setScrollBehavior] = useState(scrollBehaviors[0]);
+  const items = Array.from({ length: 18 }).map((_, index) => ({ id: index }));
+  return (
+    <>
+      <div style={{ margin: '0 0 10px' }}>
+        <Select
+          onChange={(e) => {
+            setScrollBehavior(e.target.value as ScrollBehavior);
+          }}
+          value={scrollBehavior}
+        >
+          {scrollBehaviors.map((value) => (
+            <option key={value} value={value}>
+              {value.slice(0, 1).toUpperCase() + value.slice(1)}
+            </option>
+          ))}
+        </Select>
+      </div>
+      <Carousel
+        scrollBehavior={scrollBehavior}
         items={items}
         renderItem={({ item, index, isSnapPoint }) => (
           <CarouselItem

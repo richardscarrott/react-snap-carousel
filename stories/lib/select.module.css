@@ -1,0 +1,47 @@
+.root {
+  position: relative;
+  display: inline-block;
+}
+
+.root::before,
+.root::after {
+  --size: 0.3rem;
+  position: absolute;
+  content: '';
+  right: 1rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.root::before {
+  border-left: var(--size) solid transparent;
+  border-right: var(--size) solid transparent;
+  border-bottom: var(--size) solid #fff;
+  top: 40%;
+}
+
+.root::after {
+  border-left: var(--size) solid transparent;
+  border-right: var(--size) solid transparent;
+  border-top: var(--size) solid #fff;
+  top: 55%;
+}
+
+.select {
+  appearance: none;
+  background: #04bfad;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #fff;
+  padding: 10px;
+  padding-right: 40px;
+  font-size: 16px;
+  border-radius: 5px;
+  display: inline-block;
+  position: relative;
+}
+
+.select:hover,
+.select:focus-visible {
+  opacity: 0.7;
+}
