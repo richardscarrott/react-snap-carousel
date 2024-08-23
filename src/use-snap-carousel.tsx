@@ -258,7 +258,8 @@ const _getOffsetRect = (el: Element) => {
 // https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-padding
 const getScrollPaddingUsedValue = (el: HTMLElement, pos: 'left' | 'top') => {
   const style = window.getComputedStyle(el);
-  const scrollPadding = style.getPropertyValue(`scroll-padding-${pos}`);
+  const scrollPadding =
+    style.getPropertyValue(`scroll-padding-${pos}`) || '0px';
   if (scrollPadding === 'auto') {
     return 0;
   }
@@ -284,7 +285,7 @@ const getScrollPaddingUsedValue = (el: HTMLElement, pos: 'left' | 'top') => {
 // https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin
 const getScrollMarginUsedValue = (el: HTMLElement, pos: 'left' | 'top') => {
   const style = window.getComputedStyle(el);
-  const scrollMargin = style.getPropertyValue(`scroll-margin-${pos}`);
+  const scrollMargin = style.getPropertyValue(`scroll-margin-${pos}`) || '0px';
   // https://developer.mozilla.org/en-US/docs/Web/CSS/length
   // https://www.w3.org/TR/css3-values/#length-value
   const invalidMsg = `Unsupported scroll margin value, expected <length> value, received ${scrollMargin}`;
