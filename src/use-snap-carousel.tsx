@@ -288,7 +288,6 @@ const getScrollMarginUsedValue = (el: HTMLElement, pos: 'left' | 'top') => {
   const scrollMargin = style.getPropertyValue(`scroll-margin-${pos}`) || '0px';
   // https://developer.mozilla.org/en-US/docs/Web/CSS/length
   // https://www.w3.org/TR/css3-values/#length-value
-  // alert(scrollMargin);
   const invalidMsg = `Unsupported scroll margin value, expected <length> value, received ${scrollMargin}`;
   assert(scrollMargin.endsWith('px'), invalidMsg); // Even scroll-margin: 0 should return "0px"
   const value = parseInt(scrollMargin);
