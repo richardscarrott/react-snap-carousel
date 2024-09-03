@@ -105,6 +105,10 @@ export const useSnapCarousel = ({
       const rect = getOffsetRect(item, item.parentElement);
       if (
         !currPage ||
+        // We allow items to explicitly mark themselves as snap points via the `data-should-snap`
+        // attribute. This allows callsites to augment and/or define their own "page" logic.
+        item.dataset.shouldSnap === 'true' ||
+        // Otherwise, we determine pages via the layout.
         rect[farSidePos] - currPageStartPos > Math.ceil(scrollPort[dimension])
       ) {
         acc.push([i]);
