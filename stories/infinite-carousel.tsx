@@ -40,6 +40,8 @@ export const InfiniteCarousel = React.forwardRef<
   ({ axis, items, renderItem, scrollMargin = false, scrollBehavior }, ref) => {
     const {
       scrollRef,
+      hasNextPage,
+      hasPrevPage,
       next,
       prev,
       goTo,
@@ -106,7 +108,7 @@ export const InfiniteCarousel = React.forwardRef<
         </div>
         <div className={styles.controls}>
           <button
-            disabled={activePageIndex <= 0}
+            disabled={!hasPrevPage}
             onClick={() => prev({ behavior: scrollBehavior })}
             className={styles.prevButton}
           >
@@ -135,7 +137,7 @@ export const InfiniteCarousel = React.forwardRef<
             ))}
           </ol>
           <button
-            disabled={activePageIndex === pages.length - 1}
+            disabled={!hasNextPage}
             onClick={() => next({ behavior: scrollBehavior })}
             className={styles.nextButton}
           >

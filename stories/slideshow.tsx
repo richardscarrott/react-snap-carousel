@@ -30,6 +30,8 @@ export const SlideShow = <T extends any>({
 }: SlideShowProps<T>) => {
   const {
     scrollRef,
+    hasPrevPage,
+    hasNextPage,
     next,
     prev,
     goTo,
@@ -79,7 +81,7 @@ export const SlideShow = <T extends any>({
       </div>
       <div className={styles.controls}>
         <button
-          disabled={activePageIndex === 0}
+          disabled={!hasPrevPage}
           onClick={() => prev()}
           className={styles.prevButton}
         >
@@ -103,7 +105,7 @@ export const SlideShow = <T extends any>({
           ))}
         </ol>
         <button
-          disabled={activePageIndex === pages.length - 1}
+          disabled={!hasNextPage}
           onClick={() => next()}
           className={styles.nextButton}
         >

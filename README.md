@@ -108,6 +108,8 @@ export const Carousel = <T extends any>({
     scrollRef,
     pages,
     activePageIndex,
+    hasPrevPage,
+    hasNextPage,
     prev,
     next,
     goTo,
@@ -127,9 +129,10 @@ export const Carousel = <T extends any>({
         <button
           style={{
             ...styles.nextPrevButton,
-            ...(activePageIndex <= 0 ? styles.nextPrevButtonDisabled : {})
+            ...(!hasPrevPage ? styles.nextPrevButtonDisabled : {})
           }}
           onClick={() => prev()}
+          disabled={!hasPrevPage}
         >
           Prev
         </button>
@@ -148,11 +151,10 @@ export const Carousel = <T extends any>({
         <button
           style={{
             ...styles.nextPrevButton,
-            ...(activePageIndex === pages.length - 1
-              ? styles.nextPrevButtonDisabled
-              : {})
+            ...(!hasNextPage ? styles.nextPrevButtonDisabled : {})
           }}
           onClick={() => next()}
+          disabled={!hasNextPage}
         >
           Next
         </button>
@@ -228,6 +230,8 @@ export interface SnapCarouselResult {
   readonly pages: number[][];
   readonly activePageIndex: number;
   readonly snapPointIndexes: Set<number>;
+  readonly hasPrevPage: boolean;
+  readonly hasNextPage: boolean;
   readonly prev: (opts?: SnapCarouselGoToOptions) => void;
   readonly next: (opts?: SnapCarouselGoToOptions) => void;
   readonly goTo: (pageIndex: number, opts?: SnapCarouselGoToOptions) => void;
