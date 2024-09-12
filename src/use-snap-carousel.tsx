@@ -15,6 +15,8 @@ export interface SnapCarouselResult {
   readonly pages: number[][];
   readonly activePageIndex: number;
   readonly snapPointIndexes: Set<number>;
+  readonly hasPrevPage: boolean;
+  readonly hasNextPage: boolean;
   readonly prev: (opts?: SnapCarouselGoToOptions) => void;
   readonly next: (opts?: SnapCarouselGoToOptions) => void;
   readonly goTo: (pageIndex: number, opts?: SnapCarouselGoToOptions) => void;
@@ -201,7 +203,12 @@ export const useSnapCarousel = ({
     [pages]
   );
 
+  const hasPrevPage = activePageIndex > 0;
+  const hasNextPage = activePageIndex < pages.length - 1;
+
   return {
+    hasPrevPage,
+    hasNextPage,
     prev: handlePrev,
     next: handleNext,
     goTo: handleGoTo,
