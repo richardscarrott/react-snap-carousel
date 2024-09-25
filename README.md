@@ -220,6 +220,8 @@ interface SnapCarouselOptions {
   readonly axis?: 'x' | 'y';
   // Allows you to render pagination during SSR
   readonly initialPages?: number[][];
+  // Control Snap Carousel's automatic refresh (on layout change, scroll, etc.)
+  readonly autoRefreshCondition ?: () => boolean;
 }
 ```
 
