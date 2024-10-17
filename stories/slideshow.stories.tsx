@@ -60,3 +60,22 @@ export const ScrollPadding = () => {
     />
   );
 };
+
+export const SnapEachSlide = () => {
+  return (
+    <SlideShow
+      items={items}
+      renderItem={({ item, index, isActive, isSnapPoint }) => (
+        <SlideShowItem
+          key={index}
+          isSnapPoint={isSnapPoint}
+          isActive={isActive}
+          src={item.src}
+          title={item.title}
+          subtitle={item.subtitle}
+          isSnapStop
+        />
+      )}
+    />
+  );
+};
