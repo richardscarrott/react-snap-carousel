@@ -45,18 +45,18 @@ export const SlideShow = <T extends any>({
     const handle = (e: KeyboardEvent) => {
       switch (e.key) {
         case 'ArrowLeft':
-          next();
+          prev();
           return;
         case 'ArrowRight':
-          prev();
+          next();
           return;
         default:
           return;
       }
     };
-    window.addEventListener('keypress', handle);
+    window.addEventListener('keydown', handle);
     return () => {
-      window.removeEventListener('keypress', handle);
+      window.removeEventListener('keydown', handle);
     };
   }, [next, prev]);
 
@@ -118,6 +118,7 @@ export const SlideShow = <T extends any>({
 
 export interface SlideShowItemProps {
   readonly isSnapPoint: boolean;
+  readonly isSnapStop?: boolean;
   readonly isActive: boolean;
   readonly src: string;
   readonly title: string;
@@ -126,6 +127,7 @@ export interface SlideShowItemProps {
 
 export const SlideShowItem = ({
   isSnapPoint,
+  isSnapStop,
   isActive,
   src,
   title,
@@ -135,6 +137,7 @@ export const SlideShowItem = ({
     <li
       className={classNames(styles.item, {
         [styles.snapPoint]: isSnapPoint,
+        [styles.snapStop]: isSnapStop,
         [styles.itemActive]: isActive
       })}
     >

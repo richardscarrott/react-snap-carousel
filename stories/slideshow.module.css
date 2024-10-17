@@ -44,6 +44,10 @@
   scroll-snap-align: start;
 }
 
+.snapStop {
+  scroll-snap-stop: always;
+}
+
 .itemText {
   position: absolute;
   z-index: 100;
