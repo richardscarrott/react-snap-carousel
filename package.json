@@ -1,6 +1,6 @@
 {
   "name": "react-snap-carousel",
-  "version": "0.5.1-next.0",
+  "version": "0.5.1",
   "description": "DOM-first, headless carousel for React, utilizing native browser scrolling & CSS scroll snap points",
   "author": {
     "name": "Richard Scarrott",
