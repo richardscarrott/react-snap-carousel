@@ -27,6 +27,7 @@ export interface SnapCarouselResult {
 export interface SnapCarouselOptions {
   readonly axis?: 'x' | 'y';
   readonly initialPages?: number[][];
+  readonly autoRefreshCondition?: () => boolean;
 }
 
 interface SnapCarouselState {
@@ -36,7 +37,8 @@ interface SnapCarouselState {
 
 export const useSnapCarousel = ({
   axis = 'x',
-  initialPages = []
+  initialPages = [],
+  autoRefreshCondition = () => true
 }: SnapCarouselOptions = {}): SnapCarouselResult => {
   const dimension = axis === 'x' ? 'width' : 'height';
   const scrollDimension = axis === 'x' ? 'scrollWidth' : 'scrollHeight';
@@ -95,7 +97,7 @@ export const useSnapCarousel = ({
   );
 
   const refresh = useCallback(() => {
-    if (!scrollEl) {
+    if (!scrollEl ) {
       return;
     }
     const items = Array.from(scrollEl.children);
@@ -129,14 +131,18 @@ export const useSnapCarousel = ({
   }, [refreshActivePage, scrollEl, dimension, farSidePos, nearSidePos]);
 
   useIsomorphicLayoutEffect(() => {
-    refresh();
-  }, [refresh]);
+    if(autoRefreshCondition()) {
+      refresh();
+    }
+  }, [refresh, autoRefreshCondition]);
 
   // On resize we need to refresh the state
   useEffect(() => {
     const handle = () => {
       // TODO: Consider debouncing / throttling
-      refresh();
+      if(autoRefreshCondition()) {
+        refresh();
+      }
     };
     window.addEventListener('resize', handle);
     window.addEventListener('orientationchange', handle);
@@ -144,7 +150,7 @@ export const useSnapCarousel = ({
       window.removeEventListener('resize', handle);
       window.removeEventListener('orientationchange', handle);
     };
-  }, [refresh]);
+  }, [refresh, autoRefreshCondition]);
 
   // On scroll we only need to refresh the current page as it won't impact `pages`.
   useEffect(() => {
@@ -153,13 +159,15 @@ export const useSnapCarousel = ({
     }
     const handle = () => {
       // TODO: Consider debouncing / throttling
-      refreshActivePage(pages);
+      if(autoRefreshCondition) {
+        refreshActivePage(pages);
+      }
     };
     scrollEl.addEventListener('scroll', handle);
     return () => {
       scrollEl.removeEventListener('scroll', handle);
     };
-  }, [refreshActivePage, pages, scrollEl]);
+  }, [refreshActivePage, pages, scrollEl, autoRefreshCondition]);
 
   const handleGoTo = (index: number, opts?: SnapCarouselGoToOptions) => {
     if (!scrollEl) {
